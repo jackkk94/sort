@@ -1,0 +1,8 @@
+.info{
+    width: 40%;
+}
+
+.info-item{
+    display: flex;
+    justify-content: space-between;
+}

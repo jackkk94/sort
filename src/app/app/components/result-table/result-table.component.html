@@ -1,0 +1,31 @@
+<div class="table-responsive">
+  <table class="table">
+    <caption *ngIf="caption">
+      {{caption}}
+    </caption>
+    <thead>
+      <tr>
+        <th scope="col">index</th>
+        <th scope="col">{{ operationNames.op1 }}, ms</th>
+        <th scope="col">{{ operationNames.op2 }}, ms</th>
+        <th scope="col">Equal</th>
+        <th scope="col">Fails</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of model">
+        <th scope="row">{{ item.index }}</th>
+        <td [class]="item.value.operation1.class">
+          <div class="d-flex justify-content-between"><span>{{ item.value.operation1.averageTime | number:'0.0-6' }}</span>
+          <span> | {{ item.value.operation1.isFaster }}</span>
+        </div></td>
+        <td [class]="item.value.operation2.class">
+          <div class="d-flex justify-content-between"><span>{{ item.value.operation2.averageTime | number:'0.0-6' }}</span> 
+          <span> | {{ item.value.operation2.isFaster }}</span>
+        </div></td>
+        <td><span>{{ item.value.isEqual }}</span></td>
+        <td><span>{{ item.value.Failes }}</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,29 @@
+<div *ngFor="let item of model" class="mb-5">
+  <h3 class="mb-2">{{ item.label }}</h3>
+  <div>Equal (times): {{ item.value.isEqual }}</div>
+  <div>Not Calculated (times): {{ item.value.Failes }}</div>
+  <div class="d-flex justify-content-between">
+    <div class="info">
+      <div class="text-center my-2"><b>{{ item.value.operation1.name }}</b></div>
+      <div class="info-item">
+        <div>Faster (times):</div>
+        <div>{{ item.value.operation1.isFaster }}</div>
+      </div>
+      <div class="info-item">
+        <div>~Time (ms):</div>
+        <div>{{ item.value.operation1.averageTime }}</div>
+      </div>
+    </div>
+    <div class="info">
+      <div class="text-center my-2"><b>{{ item.value.operation2.name }}</b></div>
+      <div class="info-item">
+        <div>Faster (times):</div>
+        <div>{{ item.value.operation2.isFaster }}</div>
+      </div>
+      <div class="info-item">
+        <div>~Time (ms):</div>
+        <div>{{ item.value.operation2.averageTime }}</div>
+      </div>
+    </div>
+  </div>
+</div>

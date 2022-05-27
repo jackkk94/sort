@@ -1,0 +1,7 @@
+.label{
+    flex-shrink: 0;
+}
+
+.form-input{
+    width: 100px;
+}
