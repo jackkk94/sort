@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { iterationsCount, experiments, genSampleIndexes, IResult, IServerResult, runExperiment, calcTime, ArrayType, IData } from 'src/app/node/utils';
+import { iterationsCount, experiments, genSampleIndexes, IResult, IServerResult, runExperiment, calcTime, ArrayType, IData, arrLength } from 'src/app/node/utils';
 
 
 
@@ -18,7 +18,7 @@ export class ArrayTestComponent implements OnInit {
   iterationsCount = iterationsCount;
   serverResult: IServerResult[] = [];
   showServerResult = false;
-  arraySize = 100;
+  arraySize = arrLength;
   experimentsCount = experiments;
   maxExperimentsCount = 8000;
   numbers: number[] = [];

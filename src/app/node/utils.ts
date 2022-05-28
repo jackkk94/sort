@@ -40,7 +40,7 @@ export interface IServerResult {
 }
 
 export const iterationsCount = 8000;
-export const experiments = 1;
+export const experiments = 5;
 export const arrLength = 500;
 
 // generate --------------------------------------------------------
@@ -88,7 +88,7 @@ export const genSampleIndexes = (dataLength: number, maxSamplesLength = 20): num
 
   let offset = Math.floor(dataLength / length);
 
-  for (let i = offset; i < dataLength; i = i + offset) {
+  for (let i = offset; i <= dataLength; i = i + offset) {
     arr.push(i);
   }
 

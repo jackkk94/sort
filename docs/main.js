@@ -539,7 +539,7 @@ class ArrayTestComponent {
         this.iterationsCount = utils_1.iterationsCount;
         this.serverResult = [];
         this.showServerResult = false;
-        this.arraySize = 100;
+        this.arraySize = utils_1.arrLength;
         this.experimentsCount = utils_1.experiments;
         this.maxExperimentsCount = 8000;
         this.numbers = [];
@@ -913,7 +913,7 @@ var ArrayType;
     ArrayType[ArrayType["random"] = 2] = "random";
 })(ArrayType = exports.ArrayType || (exports.ArrayType = {}));
 exports.iterationsCount = 8000;
-exports.experiments = 1;
+exports.experiments = 5;
 exports.arrLength = 500;
 // generate --------------------------------------------------------
 function genArray(count = 10000) {
@@ -951,7 +951,7 @@ const genSampleIndexes = (dataLength, maxSamplesLength = 20) => {
         length = maxSamplesLength;
     }
     let offset = Math.floor(dataLength / length);
-    for (let i = offset; i < dataLength; i = i + offset) {
+    for (let i = offset; i <= dataLength; i = i + offset) {
         arr.push(i);
     }
     return arr;

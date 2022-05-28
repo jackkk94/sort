@@ -38,7 +38,7 @@ function generate(): void {
 // }
 
 
-async function run(size = arraySize, experimentsCount = 5) {
+async function run(size = arraySize, experimentsCount = experiments) {
   let data = JSON.parse(fs.readFileSync(mockfilePath));
   let sorted = JSON.parse(fs.readFileSync(resultfilePath));
   const initial = data.initial.slice(0, size);
