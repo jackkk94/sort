@@ -585,6 +585,7 @@ class ArrayTestComponent {
                     break;
                 default: array = this.data.random;
             }
+            console.log(array);
             for (let i of this.sampleIndexes) {
                 const result = yield utils_1.runExperiment(i, array.slice(0, i), this.experimentsCount, utils_1.calcTime);
                 this.result.push(result);
@@ -904,7 +905,7 @@ ResultTableComponent.ɵcmp = i0.ɵɵdefineComponent({ type: ResultTableComponent
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.calcTimeCustom = exports.calcTime = exports.compare = exports.runExperiment = exports.partition = exports.quick = exports.quickSort = exports.insertionSort = exports.selectionSort = exports.defaultCompare = exports.Compare = exports.genSampleIndexes = exports.genReversedArray = exports.genRandomArray = exports.genArray = exports.arrLength = exports.experiments = exports.iterationsCount = exports.ArrayType = void 0;
+exports.calcTime = exports.compare = exports.runExperiment = exports.partition = exports.quick = exports.quickSort = exports.insertionSort = exports.selectionSort = exports.defaultCompare = exports.Compare = exports.genSampleIndexes = exports.genReversedArray = exports.genRandomArray = exports.genArray = exports.arrLength = exports.experiments = exports.iterationsCount = exports.ArrayType = void 0;
 const tslib_1 = __webpack_require__(/*! tslib */ "mrSG");
 var ArrayType;
 (function (ArrayType) {
@@ -914,7 +915,7 @@ var ArrayType;
 })(ArrayType = exports.ArrayType || (exports.ArrayType = {}));
 exports.iterationsCount = 8000;
 exports.experiments = 5;
-exports.arrLength = 500;
+exports.arrLength = 1000;
 // generate --------------------------------------------------------
 function genArray(count = 10000) {
     const arr = [];
@@ -1067,14 +1068,14 @@ exports.partition = partition;
 const runExperiment = (number, arr, experimentsCount = exports.experiments, calcFn = exports.calcTime) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     const array1 = [...arr];
     const array2 = [...arr];
-    const fn2 = {
+    const fn1 = {
         name: 'sort',
         fn: () => array1.sort((a, b) => a - b),
         results: [],
         averageTime: 0,
         isFaster: 0
     };
-    const fn1 = {
+    const fn2 = {
         name: 'quickSort',
         fn: () => exports.quickSort(array2),
         results: [],
@@ -1148,17 +1149,6 @@ const calcTime = (fn, iterations = exports.iterationsCount) => {
     return diff;
 };
 exports.calcTime = calcTime;
-const calcTimeCustom = (fn) => {
-    let start = (new Date()).getTime();
-    const time = 5;
-    let counter = 0;
-    while ((new Date()).getTime() - start < time) {
-        fn;
-        ++counter;
-    }
-    return time / counter;
-};
-exports.calcTimeCustom = calcTimeCustom;
 
 
 /***/ }),

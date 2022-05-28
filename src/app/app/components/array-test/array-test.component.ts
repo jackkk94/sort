@@ -65,6 +65,7 @@ export class ArrayTestComponent implements OnInit {
       case ArrayType.reversed: array = this.data.reversed; break;
       default: array = this.data.random;
     }
+    console.log(array)
 
     for (let i of this.sampleIndexes) {
       const result = await runExperiment(i, array.slice(0, i), this.experimentsCount, calcTime);

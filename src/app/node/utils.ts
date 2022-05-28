@@ -41,7 +41,7 @@ export interface IServerResult {
 
 export const iterationsCount = 8000;
 export const experiments = 5;
-export const arrLength = 500;
+export const arrLength = 1000;
 
 // generate --------------------------------------------------------
 
@@ -214,7 +214,7 @@ export const runExperiment = async (number: number, arr: number[], experimentsCo
   const array1 = [...arr];
   const array2 = [...arr];
 
-  const fn2: any = {
+  const fn1: any = {
     name: 'sort',
     fn: () => array1.sort((a,b)=>a-b),
     results: [],
@@ -222,7 +222,7 @@ export const runExperiment = async (number: number, arr: number[], experimentsCo
     isFaster: 0
   };
 
-  const fn1: any = {
+  const fn2: any = {
     name: 'quickSort',
     fn: () => quickSort(array2),
     results: [],
@@ -297,16 +297,4 @@ export const calcTime = (fn: Function, iterations: number = iterationsCount): nu
   performance.clearMeasures();
   const diff = ((value as number) - (cycle as number)) / iterations;
   return diff;
-}
-
-export const calcTimeCustom = (fn: Function): number => {
-  let start = (new Date()).getTime();
-  const time = 5;
-  let counter = 0;
-  while ((new Date()).getTime() - start < time) {
-    fn;
-    ++counter;
-  }
-
-  return time / counter;
 }

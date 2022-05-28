@@ -1,11 +1,11 @@
-import { genArray, genSampleIndexes, iterationsCount, IResult, calcTime, IOperation, IResultItem, runExperiment, calcTimeCustom, arrLength, experiments, genRandomArray, genReversedArray, IData } from './utils';
+import { genArray, genSampleIndexes, calcTime, IResultItem, runExperiment, arrLength, experiments, genRandomArray, genReversedArray, IData } from './utils';
 import { performance, } from 'perf_hooks';
 const fs = require('fs');
 const arraySize = arrLength;
 const mockfilePath = 'src/assets/data.json';
 const resultfilePath = 'src/assets/result.json';
-const sampleIndexes = genSampleIndexes(arraySize);
-
+import * as mock from '../../assets/data.json';
+import * as sorted from '../../assets/result.json';
 
 function generate(): void {
   const random = genRandomArray();
@@ -24,39 +24,23 @@ function generate(): void {
   });
 }
 
-// export const calcTimeNode = async (fn: Function, searchEl: ArrayItem, iterations: number = iterationsCount): Promise<number> => {
-//   const start = process.hrtime()[0] * 1000 + process.hrtime()[1] / 1000000;
-//   for (let i = 0; i < iterations; i++) {
-//     fn.call(null, searchEl);
-//   };
-//   const end = process.hrtime()[0] * 1000 + process.hrtime()[1] / 1000000;
-//   for (let i = 0; i < iterations; i++) { };
-//   const endCycle = process.hrtime()[0] * 1000 + process.hrtime()[1] / 1000000;
-//   const diff = (end - start - (endCycle - end)) / iterations;
-//   await Promise.resolve(1);
-//   return diff;
-// }
-
-
 async function run(size = arraySize, experimentsCount = experiments) {
-  let data = JSON.parse(fs.readFileSync(mockfilePath));
-  let sorted = JSON.parse(fs.readFileSync(resultfilePath));
-  const initial = data.initial.slice(0, size);
-  const random = data.random.slice(0, size);
-  const reversed = data.reversed.slice(0, size);
+  const initial = mock.initial.slice(0, size);
+  const random = mock.random.slice(0, size);
+  const reversed = mock.reversed.slice(0, size);
   const sampleIndexes = genSampleIndexes(size);
 
   const initialSorted = { label: "initial", data: [] };;
-  // for (let i of sampleIndexes) {
-  //   const result = await runExperiment(i, initial, experimentsCount, calcTime);
-  //   initialSorted.data.push(result)
-  // }
+  for (let i of sampleIndexes) {
+    const result = await runExperiment(i, initial, experimentsCount, calcTime);
+    initialSorted.data.push(result)
+  }
 
   const randomSorted = { label: "random", data: [] };
-  // for (let i of sampleIndexes) {
-  //   const result = await runExperiment(i, random, experimentsCount, calcTime);
-  //   randomSorted.data.push(result)
-  // }
+  for (let i of sampleIndexes) {
+    const result = await runExperiment(i, random, experimentsCount, calcTime);
+    randomSorted.data.push(result)
+  }
 
   const reverseSorted = { label: "reversed", data: [] };
   for (let i of sampleIndexes) {
@@ -65,7 +49,7 @@ async function run(size = arraySize, experimentsCount = experiments) {
   }
 
 
-  const result = JSON.stringify([...sorted, initialSorted]);
+  const result = JSON.stringify([...sorted, reverseSorted]);
   fs.writeFileSync(resultfilePath, result, (err) => {
     if (err) throw err;
   });
