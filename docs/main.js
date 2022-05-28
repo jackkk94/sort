@@ -859,7 +859,7 @@ ResultTableComponent.ɵcmp = i0.ɵɵdefineComponent({ type: ResultTableComponent
         i0.ɵɵelementStart(3, "thead");
         i0.ɵɵelementStart(4, "tr");
         i0.ɵɵelementStart(5, "th", 3);
-        i0.ɵɵtext(6, "index");
+        i0.ɵɵtext(6, "array size");
         i0.ɵɵelementEnd();
         i0.ɵɵelementStart(7, "th", 3);
         i0.ɵɵtext(8);
