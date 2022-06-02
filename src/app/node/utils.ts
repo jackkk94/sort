@@ -210,13 +210,10 @@ export const partition = (arr: number[], left: number, right: number, compare): 
 }
 
 
-export const runExperiment = async (number: number, arr: number[], experimentsCount = experiments, calcFn = calcTime): Promise<IResult> => {
-  const array1 = [...arr];
-  const array2 = [...arr];
-
+export const runExperiment = async (number: number, array: number[], experimentsCount = experiments, calcFn = calcTime): Promise<IResult> => {
   const fn1: any = {
     name: 'sort',
-    fn: () => array1.sort((a,b)=>a-b),
+    fn: (arr: number[]) => arr.sort((a,b)=>a-b),
     results: [],
     averageTime: 0,
     isFaster: 0
@@ -224,13 +221,13 @@ export const runExperiment = async (number: number, arr: number[], experimentsCo
 
   const fn2: any = {
     name: 'quickSort',
-    fn: () => quickSort(array2),
+    fn: (arr: number[]) => quickSort(arr),
     results: [],
     averageTime: 0,
     isFaster: 0
   };
 
-  const value = await compare(fn1, fn2, experimentsCount, calcFn);
+  const value = await compare(fn1, fn2, experimentsCount, calcFn, array);
 
   return Promise.resolve({
     label: `experiment`,
@@ -240,7 +237,7 @@ export const runExperiment = async (number: number, arr: number[], experimentsCo
 
 }
 
-export const compare = async (operation1: IOperation, operation2: IOperation, count: number = experiments, calcFn: Function): Promise<IResultItem> => {
+export const compare = async (operation1: IOperation, operation2: IOperation, count: number = experiments, calcFn: Function, array: number[]): Promise<IResultItem> => {
   const result: IResultItem = {
     operation1,
     operation2,
@@ -250,9 +247,9 @@ export const compare = async (operation1: IOperation, operation2: IOperation, co
   result.operation1.isFaster = result.operation2.isFaster = 0;
 
   for (let i = 0; i < count; i++) {
-    const res1 = calcFn.call(null, operation1.fn);
+    const res1 = calcFn.call(null, operation1.fn, array);
     await new Promise(resolve => setTimeout(resolve, 1));
-    const res2 = calcFn.call(null, operation2.fn);
+    const res2 = calcFn.call(null, operation2.fn, array);
     if (!i) {
       result.operation1.averageTime = res1;
       result.operation2.averageTime = res2;
@@ -280,13 +277,38 @@ export const compare = async (operation1: IOperation, operation2: IOperation, co
   return result;
 }
 
-export const calcTime = (fn: Function, iterations: number = iterationsCount): number => {
+export const calcTimeCustom = (fn: Function, array: number[]): number => {
+  
+  const time = 25;
+  let counter = 0;
+  let counter1 = 0;
+  let start = (new Date()).getTime();
+  while ((new Date()).getTime() - start < time) {
+
+    fn.call(null, [...array]);
+    ++counter;
+  }
+
+  let start1 = (new Date()).getTime();
+  while ((new Date()).getTime() - start1 < time) {
+    const arr = [...array];
+    ++counter1;
+  }
+  return time / counter - time/ counter1;
+}
+
+
+export const calcTime = (fn: Function, array: number[], iterations = iterationsCount,): number => {
+
   performance.mark('a');
   for (let i = 0; i < iterations; i++) {
-    fn();
+    const arr = [...array];
+    fn.call(null, arr);
   };
   performance.mark('b');
-  for (let i = 0; i < iterations; i++) { };
+  for (let i = 0; i < iterations; i++) {
+    const arr = [...array];
+  };
   performance.mark('c');
   performance.measure("ab", 'a', 'b');
   performance.measure("bc", 'b', 'c');
