@@ -21,10 +21,10 @@ export class ResultChartComponent implements OnInit {
   initChart(): void {
     const data1 = this.model.map(e => e.value.operation1.averageTime);
     const data2 = this.model.map(e => e.value.operation2.averageTime);
-    const NlogN = this.model.map(e => e.index*Math.log2(e.index)*data2[0]);
-    const n = this.model.map(e => e.index*data2[0]);
+    const NlogN = this.model.map(e => e.length*Math.log2(e.length)*data2[0]);
+    const n = this.model.map(e => e.length*data2[0]);
     this.chart = [{ data: data1, fill: false, label: this.model[0].value.operation1.name }, { data: data2, fill: false, label: this.model[0].value.operation2.name }]
-    this.labels = this.model.map(e => e.index.toString());
+    this.labels = this.model.map(e => e.length.toString());
 
   }
 }

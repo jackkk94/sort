@@ -29,8 +29,8 @@ export interface IResultItem {
 }
 
 export interface IResult {
-  label: string,
-  index: number,
+  label?: string,
+  length: number,
   value: IResultItem
 }
 
@@ -39,14 +39,14 @@ export interface IServerResult {
   data: IResult
 }
 
+export const arrLength = 1000;
 export const iterationsCount = 8000;
 export const experiments = 5;
-export const arrLength = 1000;
 
 // generate --------------------------------------------------------
 
-
-export function genArray(count: number = 10000): number[] {
+export const genArraySize = 10000;
+export function genArray(count = genArraySize): number[] {
   const arr: number[] = [];
   for (let i = 0; i < count; i++) {
     arr.push(i);
@@ -55,11 +55,11 @@ export function genArray(count: number = 10000): number[] {
   return arr;
 }
 
-export function genRandomArray(count: number = 10000): number[] {
+export function genRandomArray(count = genArraySize): number[] {
   return shuffleArray(genArray(count));
 }
 
-export function genReversedArray(count: number = 10000): number[] {
+export function genReversedArray(count = genArraySize): number[] {
   return genArray(count).reverse();
 }
 
@@ -210,17 +210,19 @@ export const partition = (arr: number[], left: number, right: number, compare): 
 }
 
 
-export const runExperiment = async (number: number, array: number[], experimentsCount = experiments, calcFn = calcTime): Promise<IResult> => {
+
+export const runExperiment = async (length: number, array: number[], experimentsCount = experiments, calcFn = calcTime)
+  : Promise<IResult> => {
   const fn1: any = {
-    name: 'sort',
-    fn: (arr: number[]) => arr.sort((a,b)=>a-b),
+    name: 'Array.prototype.sort',
+    fn: (arr: number[]) => arr.sort((a, b) => a - b),
     results: [],
     averageTime: 0,
     isFaster: 0
   };
 
   const fn2: any = {
-    name: 'quickSort',
+    name: 'quick Sort',
     fn: (arr: number[]) => quickSort(arr),
     results: [],
     averageTime: 0,
@@ -230,14 +232,13 @@ export const runExperiment = async (number: number, array: number[], experiments
   const value = await compare(fn1, fn2, experimentsCount, calcFn, array);
 
   return Promise.resolve({
-    label: `experiment`,
     value,
-    index: number
+    length: length
   });
-
 }
 
-export const compare = async (operation1: IOperation, operation2: IOperation, count: number = experiments, calcFn: Function, array: number[]): Promise<IResultItem> => {
+export const compare = async (operation1: IOperation, operation2: IOperation, count: number = experiments, calcFn: Function, array: number[]):
+  Promise<IResultItem> => {
   const result: IResultItem = {
     operation1,
     operation2,
@@ -277,28 +278,31 @@ export const compare = async (operation1: IOperation, operation2: IOperation, co
   return result;
 }
 
-export const calcTimeCustom = (fn: Function, array: number[]): number => {
-  
+
+
+export const calcTime = (fn: Function, array: number[]): number => {
   const time = 25;
-  let counter = 0;
-  let counter1 = 0;
-  let start = (new Date()).getTime();
-  while ((new Date()).getTime() - start < time) {
+  let fnCnt = 0;
+  let otherOperationsCnt = 0;
+  let startTime = (new Date()).getTime();
 
+  while ((new Date()).getTime() - startTime < time) {
     fn.call(null, [...array]);
-    ++counter;
+    ++fnCnt;
   }
 
-  let start1 = (new Date()).getTime();
-  while ((new Date()).getTime() - start1 < time) {
+  startTime = (new Date()).getTime();
+
+  while ((new Date()).getTime() - startTime < time) {
     const arr = [...array];
-    ++counter1;
+    ++otherOperationsCnt;
   }
-  return time / counter - time/ counter1;
+
+  return time / fnCnt - time / otherOperationsCnt;
 }
 
 
-export const calcTime = (fn: Function, array: number[], iterations = iterationsCount,): number => {
+export const calcTimeByPerformance = (fn: Function, array: number[], iterations = iterationsCount,): number => {
 
   performance.mark('a');
   for (let i = 0; i < iterations; i++) {

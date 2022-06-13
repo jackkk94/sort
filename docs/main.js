@@ -412,10 +412,10 @@ class ResultChartComponent {
     initChart() {
         const data1 = this.model.map(e => e.value.operation1.averageTime);
         const data2 = this.model.map(e => e.value.operation2.averageTime);
-        const NlogN = this.model.map(e => e.index * Math.log2(e.index) * data2[0]);
-        const n = this.model.map(e => e.index * data2[0]);
+        const NlogN = this.model.map(e => e.length * Math.log2(e.length) * data2[0]);
+        const n = this.model.map(e => e.length * data2[0]);
         this.chart = [{ data: data1, fill: false, label: this.model[0].value.operation1.name }, { data: data2, fill: false, label: this.model[0].value.operation2.name }];
-        this.labels = this.model.map(e => e.index.toString());
+        this.labels = this.model.map(e => e.length.toString());
     }
 }
 exports.ResultChartComponent = ResultChartComponent;
@@ -585,9 +585,8 @@ class ArrayTestComponent {
                     break;
                 default: array = this.data.random;
             }
-            console.log(array);
             for (let i of this.sampleIndexes) {
-                const result = yield utils_1.runExperiment(i, array.slice(0, i), this.experimentsCount, utils_1.calcTimeCustom);
+                const result = yield utils_1.runExperiment(i, array.slice(0, i), this.experimentsCount, utils_1.calcTime);
                 this.result.push(result);
             }
         });
@@ -815,7 +814,7 @@ function ResultTableComponent_tr_16_Template(rf, ctx) { if (rf & 1) {
 } if (rf & 2) {
     const item_r2 = ctx.$implicit;
     i0.ɵɵadvance(2);
-    i0.ɵɵtextInterpolate(item_r2.index);
+    i0.ɵɵtextInterpolate(item_r2.length);
     i0.ɵɵadvance(1);
     i0.ɵɵclassMap(item_r2.value.operation1.class);
     i0.ɵɵadvance(3);
@@ -905,7 +904,7 @@ ResultTableComponent.ɵcmp = i0.ɵɵdefineComponent({ type: ResultTableComponent
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.calcTime = exports.calcTimeCustom = exports.compare = exports.runExperiment = exports.partition = exports.quick = exports.quickSort = exports.insertionSort = exports.selectionSort = exports.defaultCompare = exports.Compare = exports.genSampleIndexes = exports.genReversedArray = exports.genRandomArray = exports.genArray = exports.arrLength = exports.experiments = exports.iterationsCount = exports.ArrayType = void 0;
+exports.calcTimeByPerformance = exports.calcTime = exports.compare = exports.runExperiment = exports.partition = exports.quick = exports.quickSort = exports.insertionSort = exports.selectionSort = exports.defaultCompare = exports.Compare = exports.genSampleIndexes = exports.genReversedArray = exports.genRandomArray = exports.genArray = exports.genArraySize = exports.experiments = exports.iterationsCount = exports.arrLength = exports.ArrayType = void 0;
 const tslib_1 = __webpack_require__(/*! tslib */ "mrSG");
 var ArrayType;
 (function (ArrayType) {
@@ -913,11 +912,12 @@ var ArrayType;
     ArrayType[ArrayType["reversed"] = 1] = "reversed";
     ArrayType[ArrayType["random"] = 2] = "random";
 })(ArrayType = exports.ArrayType || (exports.ArrayType = {}));
+exports.arrLength = 1000;
 exports.iterationsCount = 8000;
 exports.experiments = 5;
-exports.arrLength = 1000;
 // generate --------------------------------------------------------
-function genArray(count = 10000) {
+exports.genArraySize = 10000;
+function genArray(count = exports.genArraySize) {
     const arr = [];
     for (let i = 0; i < count; i++) {
         arr.push(i);
@@ -925,11 +925,11 @@ function genArray(count = 10000) {
     return arr;
 }
 exports.genArray = genArray;
-function genRandomArray(count = 10000) {
+function genRandomArray(count = exports.genArraySize) {
     return shuffleArray(genArray(count));
 }
 exports.genRandomArray = genRandomArray;
-function genReversedArray(count = 10000) {
+function genReversedArray(count = exports.genArraySize) {
     return genArray(count).reverse();
 }
 exports.genReversedArray = genReversedArray;
@@ -1065,16 +1065,16 @@ const partition = (arr, left, right, compare) => {
     return i;
 };
 exports.partition = partition;
-const runExperiment = (number, array, experimentsCount = exports.experiments, calcFn = exports.calcTime) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
+const runExperiment = (length, array, experimentsCount = exports.experiments, calcFn = exports.calcTime) => tslib_1.__awaiter(void 0, void 0, void 0, function* () {
     const fn1 = {
-        name: 'sort',
+        name: 'Array.prototype.sort',
         fn: (arr) => arr.sort((a, b) => a - b),
         results: [],
         averageTime: 0,
         isFaster: 0
     };
     const fn2 = {
-        name: 'quickSort',
+        name: 'quick Sort',
         fn: (arr) => exports.quickSort(arr),
         results: [],
         averageTime: 0,
@@ -1082,9 +1082,8 @@ const runExperiment = (number, array, experimentsCount = exports.experiments, ca
     };
     const value = yield exports.compare(fn1, fn2, experimentsCount, calcFn, array);
     return Promise.resolve({
-        label: `experiment`,
         value,
-        index: number
+        length: length
     });
 });
 exports.runExperiment = runExperiment;
@@ -1126,24 +1125,24 @@ const compare = (operation1, operation2, count = exports.experiments, calcFn, ar
     return result;
 });
 exports.compare = compare;
-const calcTimeCustom = (fn, array) => {
+const calcTime = (fn, array) => {
     const time = 25;
-    let counter = 0;
-    let counter1 = 0;
-    let start = (new Date()).getTime();
-    while ((new Date()).getTime() - start < time) {
+    let fnCnt = 0;
+    let otherOperationsCnt = 0;
+    let startTime = (new Date()).getTime();
+    while ((new Date()).getTime() - startTime < time) {
         fn.call(null, [...array]);
-        ++counter;
+        ++fnCnt;
     }
-    let start1 = (new Date()).getTime();
-    while ((new Date()).getTime() - start1 < time) {
+    startTime = (new Date()).getTime();
+    while ((new Date()).getTime() - startTime < time) {
         const arr = [...array];
-        ++counter1;
+        ++otherOperationsCnt;
     }
-    return time / counter - time / counter1;
+    return time / fnCnt - time / otherOperationsCnt;
 };
-exports.calcTimeCustom = calcTimeCustom;
-const calcTime = (fn, array, iterations = exports.iterationsCount) => {
+exports.calcTime = calcTime;
+const calcTimeByPerformance = (fn, array, iterations = exports.iterationsCount) => {
     var _a, _b;
     performance.mark('a');
     for (let i = 0; i < iterations; i++) {
@@ -1166,7 +1165,7 @@ const calcTime = (fn, array, iterations = exports.iterationsCount) => {
     const diff = (value - cycle) / iterations;
     return diff;
 };
-exports.calcTime = calcTime;
+exports.calcTimeByPerformance = calcTimeByPerformance;
 
 
 /***/ }),

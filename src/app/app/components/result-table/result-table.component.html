@@ -14,7 +14,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let item of model">
-        <th scope="row">{{ item.index }}</th>
+        <th scope="row">{{ item.length }}</th>
         <td [class]="item.value.operation1.class">
           <div class="d-flex justify-content-between"><span>{{ item.value.operation1.averageTime | number:'0.0-6' }}</span>
           <span> | {{ item.value.operation1.isFaster }}</span>
